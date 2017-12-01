@@ -1,0 +1,91 @@
+$size: 200px;
+
+$font: #3a3b3d;
+
+$colors: (
+  0: #eff1f4,
+  1: #dae3f2,
+  2: #c0d6f7,
+  4: #a3c4f7,
+  8: #88b3f7,
+  16: #6099f2,
+  32: #468af4,
+  64: #2979f4,
+  128: #0967f7,
+);
+
+
+@function pow($number, $exponent) {
+  $value: 1;
+
+  @if $exponent > 0 {
+    @for $i from 1 through $exponent {
+      $value: $value * $number;
+    }
+  }
+
+  @return $value;
+}
+
+.scene {
+  margin: 100px;
+  width: $size;
+  height: $size;
+  position: absolute;
+  perspective: 600px;
+}
+
+.cube {
+  width: inherit;
+  height: inherit;
+  transform-style: preserve-3d;
+  transition: transform 1000ms;
+
+  .face {
+    width: inherit;
+    height: inherit;
+    position: absolute;
+
+    &.front {
+      transform: translate3d(0, 0, $size/2);
+    }
+    &.right {
+      transform: rotateY(90deg) translate3d(0, 0, $size/2);
+    }
+    &.back {
+      transform: rotateY(180deg) translate3d(0, 0, $size/2);
+    }
+    &.left {
+      transform: rotateY(-90deg) translate3d(0, 0, $size/2);
+    }
+    &.top {
+      transform: rotateX(90deg) translate3d(0, 0, $size/2);
+    }
+    &.bottom {
+      transform: rotateX(-90deg) translate3d(0, 0, $size/2);
+    }
+
+    .block {
+      width: $size / 2;
+      height: $size / 2;
+      display: inline-block;
+
+      @each $val, $color in $colors {
+        &[data-value="#{$val}"] {
+          background-color: $color;
+        }
+      }
+
+      .content {
+        width: inherit;
+        height: inherit;
+        color: $font;
+        font-size: $size / 4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        user-select: none;
+      }
+    }
+  }
+}
