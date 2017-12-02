@@ -17,11 +17,15 @@ export const Direction = {
 class Game {
   constructor() {
     this.blocks = [];
-    for (var i = 0; i < 8; i++) {
-      this.blocks.push(new Block(0));
+    for (var x = 0; x < 4; x++) {
+      for (var y = 0; y < 4; y++) {
+        for (var z = 0; z < 4; z++) {
+          this.blocks.push(new Block(0, x, y, z));
+        }
+      }
     }
-    this.blocks[2].setVal(1);
     this.cube = new Cube(this.blocks);
+    this.cube.faces[Orientation.FRONT].slide(Direction.UP);
   }
 }
 export { Game };
@@ -30,17 +34,25 @@ class Cube {
   constructor(blocks) {
     this.blocks = blocks;
     this.faces = {
-      'front': new Face(this.getBlocks([0, 1, 2, 3])),
-      'right': new Face(this.getBlocks([1, 4, 3, 6])),
-      'back': new Face(this.getBlocks([4, 5, 6, 7])),
-      'left': new Face(this.getBlocks([5, 0, 7, 2])),
-      'top': new Face(this.getBlocks([5, 4, 0, 1])),
-      'bottom': new Face(this.getBlocks([2, 3, 7, 6]))
+      'front': new Face(this.getBlocks(null, null, 0)),
+      'right': new Face(this.getBlocks(3, null, null)),
+      'back': new Face(this.getBlocks(null, null, 3)),
+      'left': new Face(this.getBlocks(0, null, null)),
+      'top': new Face(this.getBlocks(null, 0, null)),
+      'bottom': new Face(this.getBlocks(null, 3, null))
     };
   }
 
-  getBlocks(indices) {
-    return indices.map((idx) => this.blocks[idx]);
+  getBlocks(x, y, z) {
+    if (x != null) {
+      return this.blocks.filter((block) => block.x === x);
+    }
+    if (y != null) {
+      return this.blocks.filter((block) => block.y === y);
+    }
+    if (z != null) {
+      return this.blocks.filter((block) => block.z === z);
+    }
   }
 }
 
@@ -52,23 +64,31 @@ class Face {
   slide(direction) {
     switch(direction) {
       case Direction.RIGHT:
-        this.collapse([1, 0]);
-        this.collapse([3, 2]);
-        this.blocks[2].setVal(1);
+        this.collapse([3, 2, 1, 0]);
+        this.collapse([7, 6, 5, 4]);
+        this.collapse([11, 10, 9, 8]);
+        this.collapse([15, 14, 13, 12]);
+        this.blocks[12].setVal(1);
         break;
       case Direction.LEFT:
-        this.collapse([0, 1]);
-        this.collapse([2, 3]);
-        this.blocks[3].setVal(1);
+        this.collapse([0, 1, 2, 3]);
+        this.collapse([4, 5, 6, 7]);
+        this.collapse([8, 9, 10, 11]);
+        this.collapse([12, 13, 14, 15]);
+        this.blocks[15].setVal(1);
         break;
       case Direction.UP:
-        this.collapse([0, 2]);
-        this.collapse([1, 3]);
-        this.blocks[2].setVal(1);
+        this.collapse([0, 4, 8, 12]);
+        this.collapse([1, 5, 9, 13]);
+        this.collapse([2, 6, 10, 14]);
+        this.collapse([3, 7, 11, 15]);
+        this.blocks[12].setVal(1);
         break;
       case Direction.DOWN:
-        this.collapse([2, 0]);
-        this.collapse([3, 1]);
+        this.collapse([12, 8, 4, 0]);
+        this.collapse([13, 9, 5, 1]);
+        this.collapse([14, 10, 6, 2]);
+        this.collapse([15, 11, 7, 3]);
         this.blocks[0].setVal(1);
         break;
       default:
@@ -92,8 +112,11 @@ class Face {
 export { Face };
 
 class Block {
-  constructor(val) {
+  constructor(val, x, y, z) {
     this.val = val;
+    this.x = x;
+    this.y = y;
+    this.z = z;
   }
 
   setVal(val) {
