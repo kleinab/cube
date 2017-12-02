@@ -76,6 +76,10 @@ $colors: (
         }
       }
 
+      &[data-value="0"] .content {
+        color: transparent;
+      }
+
       .content {
         width: inherit;
         height: inherit;
