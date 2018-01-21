@@ -62,7 +62,7 @@ $colors: (
       transform: rotateX(90deg) translate3d(0, 0, $size/2);
     }
     &.bottom {
-      transform: rotateX(-90deg) translate3d(0, 0, $size/2);
+      transform: rotateX(-90deg) rotate(-90deg) translate3d(0, 0, $size/2);
     }
 
     .block {

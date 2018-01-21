@@ -17,9 +17,9 @@ export const Direction = {
 class Game {
   constructor() {
     this.blocks = [];
-    for (var x = 0; x < 4; x++) {
+    for (var z = 0; z < 4; z++) {
       for (var y = 0; y < 4; y++) {
-        for (var z = 0; z < 4; z++) {
+        for (var x = 0; x < 4; x++) {
           this.blocks.push(new Block(0, x, y, z));
         }
       }
@@ -34,31 +34,34 @@ class Cube {
   constructor(blocks) {
     this.blocks = blocks;
     this.faces = {
-      'front': new Face(this.getBlocks(null, null, 0)),
-      'right': new Face(this.getBlocks(3, null, null)),
-      'back': new Face(this.getBlocks(null, null, 3)),
-      'left': new Face(this.getBlocks(0, null, null)),
-      'top': new Face(this.getBlocks(null, 0, null)),
-      'bottom': new Face(this.getBlocks(null, 3, null))
+      'front': new Face(this.getZPlane(3).sort((a, b) => this.toEq(a.x, -a.y) - this.toEq(b.x, -b.y))),
+      'right': new Face(this.getXPlane(3).sort((a, b) => this.toEq(-a.z, -a.y) - this.toEq(-b.z, -b.y))),
+      'back': new Face(this.getZPlane(0).sort((a, b) => this.toEq(-a.x, -a.y) - this.toEq(-b.x, -b.y))),
+      'left': new Face(this.getXPlane(0).sort((a, b) => this.toEq(a.z, -a.y) - this.toEq(b.z, -b.y))),
+      'top': new Face(this.getYPlane(3).sort((a, b) => this.toEq(a.x, a.z) - this.toEq(b.x, b.z))),
+      'bottom': new Face(this.getYPlane(0).sort((a, b) => this.toEq(-a.x, -a.z) - this.toEq(-b.x, -b.z)))
     };
   }
 
-  getBlocks(x, y, z) {
-    if (x != null) {
-      return this.blocks.filter((block) => block.x === x);
-    }
-    if (y != null) {
-      return this.blocks.filter((block) => block.y === y);
-    }
-    if (z != null) {
-      return this.blocks.filter((block) => block.z === z);
-    }
+  getXPlane(x) {
+    return this.blocks.filter((block) => block.x === x);
+  }
+  getYPlane(y) {
+    return this.blocks.filter((block) => block.y === y);
+  }
+  getZPlane(z) {
+    return this.blocks.filter((block) => block.z === z);
+  }
+
+  toEq(x, y) {
+    return 4 * y + x;
   }
 }
 
 class Face {
   constructor(blocks) {
     this.blocks = blocks;
+    console.log(blocks);
   }
 
   slide(direction) {
