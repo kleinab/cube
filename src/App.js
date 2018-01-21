@@ -3,12 +3,12 @@ import './App.css';
 import { Orientation, Direction, Game } from './Game.js';
 
 var orientations = [
-  {name: Orientation.FRONT, xRotation: 0, yRotation: 0},
-  {name: Orientation.RIGHT, xRotation: 0, yRotation: -90},
-  {name: Orientation.BACK, xRotation: 0, yRotation: -180},
-  {name: Orientation.LEFT, xRotation: 0, yRotation: -270},
-  {name: Orientation.TOP, xRotation: 90, yRotation: 0},
-  {name: Orientation.BOTTOM, xRotation: -90, yRotation: 0},
+  {name: Orientation.FRONT, xRotation: 0, yRotation: 0, zRotation: 0},
+  {name: Orientation.RIGHT, xRotation: 0, yRotation: -90, zRotation: 0},
+  {name: Orientation.BACK, xRotation: 0, yRotation: -180, zRotation: 0},
+  {name: Orientation.LEFT, xRotation: 0, yRotation: -270, zRotation: 0},
+  {name: Orientation.TOP, xRotation: -90, yRotation: 0, zRotation: 0},
+  {name: Orientation.BOTTOM, xRotation: 90, yRotation: 0, zRotation: 90},
 ];
 
 class App extends Component {
@@ -82,13 +82,17 @@ class Cube extends Component {
     for (var key in Orientation) {
       var value = Orientation[key]
       faces.push(
-        <Face orientation={value} face={this.state.faces[value]} />
+        <Face orientation={value}
+              face={this.state.faces[value]}
+              rotation={orientations[this.state.activeFace].zRotation} />
       );
     }
 
     return (
       <div className="scene">
-        <div className="cube" style={cubeStyle} onClick={this.rotateCube}>
+        <div className="cube"
+             style={cubeStyle}
+             onClick={this.rotateCube}>
           {faces}
         </div>
       </div>
@@ -98,7 +102,8 @@ class Cube extends Component {
 
 class Face extends Component {
   render() {
-    const blocks = this.props.face.blocks.map((block) => <Block val={block.val} />);
+    const blocks = this.props.face.blocks.map(
+      (block) => <Block val={block.val} rotation={this.props.rotation} />);
 
     return(
       <div className={"face " + this.props.orientation}>
@@ -110,8 +115,14 @@ class Face extends Component {
 
 class Block extends Component {
   render() {
+    const blockStyle = {
+      transform: "rotate(" + this.props.rotation + "deg)"
+    }
+
     return(
-      <div className="block" data-value={this.props.val}>
+      <div className="block"
+           style={blockStyle}
+           data-value={this.props.val}>
         <div className="content">{this.props.val}</div>
       </div>
     );
