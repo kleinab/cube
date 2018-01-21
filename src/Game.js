@@ -61,7 +61,6 @@ class Cube {
 class Face {
   constructor(blocks) {
     this.blocks = blocks;
-    console.log(blocks);
   }
 
   slide(direction) {

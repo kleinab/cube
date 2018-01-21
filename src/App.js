@@ -2,6 +2,15 @@ import React, { Component } from 'react';
 import './App.css';
 import { Orientation, Direction, Game } from './Game.js';
 
+var orientations = [
+  {name: Orientation.FRONT, xRotation: 0, yRotation: 0},
+  {name: Orientation.RIGHT, xRotation: 0, yRotation: -90},
+  {name: Orientation.BACK, xRotation: 0, yRotation: -180},
+  {name: Orientation.LEFT, xRotation: 0, yRotation: -270},
+  {name: Orientation.TOP, xRotation: 90, yRotation: 0},
+  {name: Orientation.BOTTOM, xRotation: -90, yRotation: 0},
+];
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -25,9 +34,7 @@ class Cube extends Component {
     super(props);
     this.state = {
       faces: this.props.cube.faces,
-      activeFace: Orientation.FRONT,
-      xRotation: 0,
-      yRotation: 0
+      activeFace: 0
     }
   }
 
@@ -55,13 +62,12 @@ class Cube extends Component {
 
   rotateCube = () => {
     this.setState({
-      xRotation: this.state.xRotation + 90,
-      yRotation: this.state.yRotation + 90
+      activeFace: (this.state.activeFace + 1) % orientations.length
     });
   }
 
   slide = (direction) => {
-    this.state.faces[this.state.activeFace].slide(direction);
+    this.state.faces[orientations[this.state.activeFace].name].slide(direction);
     this.setState({
       faces: this.props.cube.faces
     });
@@ -69,7 +75,7 @@ class Cube extends Component {
 
   render() {
     const cubeStyle = {
-      transform: "rotateX(" + this.state.xRotation + "deg) rotateY(" + this.state.yRotation + "deg)"
+      transform: "rotateX(" + orientations[this.state.activeFace].xRotation + "deg) rotateY(" + orientations[this.state.activeFace].yRotation + "deg)"
     }
 
     const faces = [];
